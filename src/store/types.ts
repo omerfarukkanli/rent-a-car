@@ -21,7 +21,7 @@ export type SuccessResponseDto = {
   success: boolean;
   statusCode: number;
   message: string;
-  data?: any;
+  data?: SignInResponse | null;
   timestamp?: string;
 };
 
@@ -33,4 +33,4 @@ export type ErrorResponseDto = {
   timestamp?: string;
 };
 
-export const BaseUrl = process.env.DATABASE_URL;
+export const BaseUrl = process.env.NEXT_PUBLIC_API_URL;

@@ -11,14 +11,44 @@ import {
   REGISTER,
   REHYDRATE,
 } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
 import { setupListeners } from '@reduxjs/toolkit/query';
+import { Storage } from 'redux-persist';
+import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 
 export const PERSIST_CONFIG_KEY = 'persist_rentt_a_car';
 
+interface StorageAdapter extends Storage {
+  getItem(key: string): Promise<string | null>;
+  setItem(key: string, value: string): Promise<void>;
+  removeItem(key: string): Promise<void>;
+}
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
+export const createNoopStorage = (): StorageAdapter => {
+  return {
+    getItem(_key: string) {
+      return Promise.resolve(null);
+    },
+    setItem(_key: string, _value: string) {
+      return Promise.resolve();
+    },
+    removeItem(_key: string) {
+      return Promise.resolve();
+    },
+  };
+};
+/* eslint-enable @typescript-eslint/no-unused-vars */
+
+export const storage: StorageAdapter = (
+  typeof window !== 'undefined'
+    ? createWebStorage('local')
+    : createNoopStorage()
+) as StorageAdapter;
+
 const persistConfig = {
   key: PERSIST_CONFIG_KEY,
-  storage: storage,
+  storage,
+  version: 1,
 };
 
 const rootReducer = combineReducers({

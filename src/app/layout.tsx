@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import ReduxProvaider from '@/provaiders/redux.provaider';
+import AuthGuard from '@/provaiders/auth.provaider';
 
 export const metadata: Metadata = {
   title: 'My App',
@@ -14,9 +15,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en'>
-      <body className='min-h-screen bg-white dark:bg-gray-900'>
+      <body>
         <ReduxProvaider>
-          <main>{children}</main>
+          <AuthGuard>
+            <main>{children}</main>
+          </AuthGuard>
         </ReduxProvaider>
       </body>
     </html>
