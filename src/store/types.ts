@@ -33,4 +33,6 @@ export type ErrorResponseDto = {
   timestamp?: string;
 };
 
+export type DefaultResponse = SuccessResponseDto | ErrorResponseDto;
+
 export const BaseUrl = process.env.NEXT_PUBLIC_API_URL;

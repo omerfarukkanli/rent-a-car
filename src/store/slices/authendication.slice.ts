@@ -1,9 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit/react';
-import { AuthToken } from '../types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit/react';
 
 export type AuthendicationState = {
   isAuthenticated: boolean;
-  authToken?: AuthToken;
+  access_token?: string;
 };
 
 export const initialState: AuthendicationState = {
@@ -14,12 +13,12 @@ const authendicationSlice = createSlice({
   name: 'authendication',
   initialState,
   reducers: {
-    setAuthToken: (state, action) => {
-      state.authToken = action.payload;
-      state.isAuthenticated = true;
+    setAuthToken: (state, action: PayloadAction<AuthendicationState>) => {
+      state.access_token = action.payload.access_token;
+      state.isAuthenticated = action.payload.isAuthenticated;
     },
     clearAuthToken: (state) => {
-      state.authToken = undefined;
+      state.access_token = undefined;
       state.isAuthenticated = false;
     },
   },

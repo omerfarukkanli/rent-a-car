@@ -1,17 +1,15 @@
 'use client';
-
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store';
+import { useAppSelector } from '@/hooks/store';
 
 const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.authendication.isAuthenticated
+  const isAuthenticated = useAppSelector(
+    (state) => state.authendication.isAuthenticated
   );
-
+  console.log('is:   ' + isAuthenticated);
   const publicRoutes = ['/auth/login', '/auth/register'];
   const isPublicRoute = publicRoutes.includes(pathname);
 
