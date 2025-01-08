@@ -1,6 +1,6 @@
 'use client';
+import MailInput from '@/components/Inputs/mail.input';
 import PasswordInput from '@/components/Inputs/password.input';
-import TextInput from '@/components/Inputs/text.input';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -16,51 +16,49 @@ import { useState } from 'react';
 
 const Page = () => {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [signIn, { data, isSuccess }] = useSignInMutation();
-  const [errorMessages, setErrorMessages] = useState<string[]>([]);
-
+  const [signIn] = useSignInMutation();
   const dispatch = useAppDispatch();
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+    isEmailValid: false,
+    isPasswordValid: false,
+    validateInputs: false,
+  });
+  const handleChange = (field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
 
-  const handleLogin = () => {
-    if (!email || !password) {
+  const handleValidationChange = (field: string, isValid: boolean) => {
+    setForm((prev) => ({ ...prev, [field]: isValid }));
+  };
+  const handleLogin = async () => {
+    setForm((prev) => ({ ...prev, validateInputs: true }));
+    const { isEmailValid, isPasswordValid } = form;
+    if (!isEmailValid || !isPasswordValid) {
       return;
     }
 
-    signIn({ email, password }).then(() => {
-      if (isSuccess) {
-        console.log('Login success');
-        if ('data' in data && data.data) {
-          dispatch(
-            setAuthToken({
-              isAuthenticated: true,
-              access_token: data.data.access_token,
-            })
-          );
-        }
+    try {
+      const result = await signIn({
+        email: form.email,
+        password: form.password,
+      }).unwrap();
+
+      if ('data' in result && result.data?.access_token) {
+        dispatch(
+          setAuthToken({
+            isAuthenticated: true,
+            access_token: result.data.access_token,
+          })
+        );
+        router.push('/dashboard');
       }
-    });
-  };
-
-  const validatePassword = (value: string) => {
-    if (!value || value.trim().length === 0) {
-      return 'Şifre alanı boş bırakılamaz';
-    }
-    return '';
-  };
-
-  const handlePasswordBlur = () => {
-    const error = validatePassword(password);
-    setErrorMessages(error ? [error] : []);
-  };
-
-  const handlePasswordChange = (value: string) => {
-    setPassword(value);
-    if (errorMessages.length > 0) {
-      setErrorMessages([]);
+    } catch (error) {
+      console.error('Login failed:', error);
     }
   };
+
   return (
     <Card className='w-[400px]'>
       <CardHeader>Giriş Yap</CardHeader>
@@ -68,23 +66,29 @@ const Page = () => {
         <CardDescription>
           <p>Rent A Car giriş yaparak araçlarınızı yönetebilirsiniz.</p>
         </CardDescription>
-        <div className='mt-10 gap-5 flex flex-col'>
-          <TextInput
+        <div className='mt-10 gap-3 flex flex-col'>
+          <MailInput
             label='E-posta'
+            placeholder='example@gmai.com'
             id='email'
-            value={email}
-            onChangeText={setEmail}
+            value={form.email}
+            onChangeText={(value) => handleChange('email', value)}
+            setIsValidate={(isValid) =>
+              handleValidationChange('isEmailValid', isValid)
+            }
+            validateOnDemand={form.validateInputs}
           />
-          <div>
-            <PasswordInput
-              id='password'
-              value={password}
-              onChangeText={handlePasswordChange}
-              label='Şifre'
-              onBlur={handlePasswordBlur}
-              errorMessage={errorMessages[0]}
-            />
-          </div>
+          <PasswordInput
+            id='password'
+            value={form.password}
+            placeholder='Şifre'
+            onChangeText={(value) => handleChange('password', value)}
+            label='Şifre'
+            setIsValidate={(isValid) =>
+              handleValidationChange('isPasswordValid', isValid)
+            }
+            validateOnDemand={form.validateInputs}
+          />
           <Button className='mt-5' onClick={handleLogin}>
             Giriş Yap
           </Button>

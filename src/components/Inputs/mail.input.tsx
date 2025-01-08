@@ -1,30 +1,30 @@
 import { InputHTMLAttributes, useEffect, useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Input } from '../ui/input';
 import { useInputValidation } from '@/hooks/useInputValidation';
 
-interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
-  required?: boolean;
+interface MailInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   id: string;
   value: string;
-  validateOnDemand?: boolean;
-  setIsValidate?: (value: boolean) => void;
+  setIsValidate: (value: boolean) => void;
   onChangeText: (value: string) => void;
+  validateOnDemand?: boolean;
 }
 
-const TextInput = ({
-  required,
+const MailInput = ({
   label,
+  id,
   value,
   onChangeText,
   setIsValidate,
   validateOnDemand,
-  id,
-  ...res
-}: TextInputProps) => {
+  ...props
+}: MailInputProps) => {
   const { isError, validate, errorMessage } = useInputValidation({
-    rules: { required: required },
+    rules: {
+      required: true,
+      pattern: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+    },
   });
 
   const [prevValidation, setPrevValidation] = useState(false);
@@ -41,28 +41,29 @@ const TextInput = ({
 
   return (
     <div>
-      <Label htmlFor={id}>{label}</Label>
+      <label htmlFor='email'>{label}</label>
       <Input
-        type='text'
+        type='email'
         id={id}
         value={value}
-        onBlur={() => {
-          if (required) {
-            const isValid = validate(value);
-            if (setIsValidate) setIsValidate(isValid);
-          }
-        }}
         onChange={(e) => onChangeText(e.target.value)}
+        onBlur={() => {
+          const isValid = validate(value);
+          setIsValidate(isValid);
+        }}
         className={`${
           errorMessage || isError
             ? 'border-red-500 focus-visible:ring-red-500'
             : ''
         }`}
-        {...res}
+        {...props}
       />
-      {isError && <p className='text-sm text-red-500'>{errorMessage}</p>}
+      {(errorMessage || isError) && (
+        <p className='text-sm text-red-500'>
+          {errorMessage || 'Password must be at least 8 characters'}
+        </p>
+      )}
     </div>
   );
 };
-
-export default TextInput;
+export default MailInput;

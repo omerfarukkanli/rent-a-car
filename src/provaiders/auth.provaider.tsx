@@ -9,7 +9,7 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = useAppSelector(
     (state) => state.authendication.isAuthenticated
   );
-  console.log('is:   ' + isAuthenticated);
+
   const publicRoutes = ['/auth/login', '/auth/register'];
   const isPublicRoute = publicRoutes.includes(pathname);
 
