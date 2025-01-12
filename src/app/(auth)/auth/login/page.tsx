@@ -52,7 +52,7 @@ const Page = () => {
             access_token: result.data.access_token,
           })
         );
-        router.push('/dashboard');
+        router.push('/');
       }
     } catch (error) {
       console.error('Login failed:', error);
