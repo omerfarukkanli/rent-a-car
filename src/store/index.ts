@@ -1,5 +1,4 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { authService } from './service/auth.service';
 import { authendicationSlice } from './slices/authendication.slice';
 import {
   FLUSH,
@@ -14,6 +13,8 @@ import {
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { Storage } from 'redux-persist';
 import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
+import { carService } from './service/car.service';
+import { authService } from './service/auth.service';
 
 export const PERSIST_CONFIG_KEY = 'persist_rentt_a_car';
 
@@ -54,6 +55,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   authendication: authendicationSlice.reducer,
   [authService.reducerPath]: authService.reducer,
+  [carService.reducerPath]: carService.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -65,7 +67,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(authService.middleware),
+    }).concat(authService.middleware, carService.middleware),
 });
 
 setupListeners(store.dispatch);

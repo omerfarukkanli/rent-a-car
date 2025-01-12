@@ -11,8 +11,9 @@ export type SignInRequest = {
 };
 
 export type SignInResponse = {
-  access_token: string;
-};
+  role: string;
+} & AuthToken;
+
 export type AuthToken = {
   access_token: string;
 };
@@ -32,6 +33,38 @@ export type ErrorResponseDto = {
   path: string;
   timestamp?: string;
 };
+
+export type CreateCarRequest = {
+  brand: string;
+  carModel: string;
+  carType: CarType;
+  carFuelType: CarFuelType;
+  year: string;
+  color: string;
+  image: string;
+};
+
+export enum CarType {
+  SEDAN = 'SEDAN',
+  SUV = 'SUV',
+  TRUCK = 'TRUCK',
+  VAN = 'VAN',
+  COUPE = 'COUPE',
+  CONVERTIBLE = 'CONVERTIBLE',
+  SPORTS = 'SPORTS',
+}
+
+export enum CarFuelType {
+  GASOLINE = 'GASOLINE',
+  DIESEL = 'DIESEL',
+  ELECTRIC = 'ELECTRIC',
+  HYBRID = 'HYBRID',
+}
+
+export enum UserRole {
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+}
 
 export type DefaultResponse = SuccessResponseDto | ErrorResponseDto;
 
