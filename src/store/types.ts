@@ -22,7 +22,7 @@ export type SuccessResponseDto = {
   success: boolean;
   statusCode: number;
   message: string;
-  data?: SignInResponse | null;
+  data?: SignInResponse | Car | null;
   timestamp?: string;
 };
 
@@ -34,7 +34,7 @@ export type ErrorResponseDto = {
   timestamp?: string;
 };
 
-export type CreateCarRequest = {
+export type Car = {
   brand: string;
   carModel: string;
   carType: CarType;

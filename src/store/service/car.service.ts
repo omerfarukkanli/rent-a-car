@@ -1,13 +1,14 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { customBaseQuery } from './CustomQuery';
-import { CreateCarRequest, DefaultResponse } from '../types';
+import { Car, DefaultResponse } from '../types';
+
+import { baseQuery } from './CustomQuery';
 
 const carService = createApi({
   reducerPath: 'carService',
-  baseQuery: customBaseQuery,
+  baseQuery: baseQuery,
   endpoints(build) {
     return {
-      createCar: build.mutation<DefaultResponse, CreateCarRequest>({
+      createCar: build.mutation<DefaultResponse, Car>({
         query: (queryArg) => ({
           url: '/car/create',
           method: 'POST',
@@ -29,10 +30,7 @@ const carService = createApi({
         }),
       }),
 
-      updateCar: build.mutation<
-        DefaultResponse,
-        { id: string; data: CreateCarRequest }
-      >({
+      updateCar: build.mutation<DefaultResponse, { id: string; data: Car }>({
         query: ({ id, data }) => ({
           url: `/car/${id}`,
           method: 'PUT',
@@ -52,7 +50,7 @@ const carService = createApi({
 
 export const {
   useCreateCarMutation,
-  useGetCarsQuery,
+  useLazyGetCarsQuery,
   useGetCarQuery,
   useUpdateCarMutation,
   useDeleteCarMutation,

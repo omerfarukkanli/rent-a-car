@@ -11,6 +11,7 @@ import {
 import { useAppDispatch } from '@/hooks/store';
 import { useSignInMutation } from '@/store/service/auth.service';
 import { setAuthToken } from '@/store/slices/authendication.slice';
+import { UserRole } from '@/store/types';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -50,6 +51,7 @@ const Page = () => {
           setAuthToken({
             isAuthenticated: true,
             access_token: result.data.access_token,
+            role: result.data.role as UserRole,
           })
         );
         router.push('/');
