@@ -1,9 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
   BaseUrl,
-  DefaultResponse,
+  ErrorResponseDto,
   SignInRequest,
+  SignInResponse,
   SignUpRequest,
+  SuccessResponseDto,
 } from '../types';
 
 const authService = createApi({
@@ -13,7 +15,10 @@ const authService = createApi({
   }),
   endpoints(build) {
     return {
-      signUp: build.mutation<DefaultResponse, SignUpRequest>({
+      signUp: build.mutation<
+        SuccessResponseDto<null> | ErrorResponseDto,
+        SignUpRequest
+      >({
         query: (queryArg) => ({
           url: '/auth/signup',
           method: 'POST',
@@ -21,7 +26,10 @@ const authService = createApi({
         }),
       }),
 
-      signIn: build.mutation<DefaultResponse, SignInRequest>({
+      signIn: build.mutation<
+        SuccessResponseDto<SignInResponse> | ErrorResponseDto,
+        SignInRequest
+      >({
         query: (queryArg) => ({
           url: '/auth/signin',
           method: 'POST',
