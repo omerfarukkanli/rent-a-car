@@ -1,48 +1,59 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import { Car, DefaultResponse } from '../types';
+import { Car, ApiResponse, SuccessResponseDto } from '../types';
 
 import { baseQuery } from './CustomQuery';
+import { transformResponse } from '@/hooks/store';
 
 const carService = createApi({
   reducerPath: 'carService',
   baseQuery: baseQuery,
+  tagTypes: ['Cars'],
   endpoints(build) {
     return {
-      createCar: build.mutation<DefaultResponse, Car>({
+      createCar: build.mutation<Car[], Car>({
         query: (queryArg) => ({
           url: '/car/create',
           method: 'POST',
           body: queryArg,
         }),
+        transformResponse: (response: ApiResponse<Car[]>) =>
+          transformResponse(response),
+        invalidatesTags: ['Cars'],
       }),
 
-      getCars: build.query<DefaultResponse, void>({
+      getCars: build.query<Car[], void>({
         query: () => ({
           url: '/car',
           method: 'GET',
         }),
+        transformResponse: (response: ApiResponse<Car[]>) =>
+          transformResponse(response),
+        providesTags: ['Cars'],
       }),
 
-      getCar: build.query<DefaultResponse, string>({
-        query: (id) => ({
-          url: `/car/${id}`,
-          method: 'GET',
-        }),
-      }),
-
-      updateCar: build.mutation<DefaultResponse, { id: string; data: Car }>({
+      updateCar: build.mutation<Car, { id: string; data: Car }>({
         query: ({ id, data }) => ({
           url: `/car/${id}`,
           method: 'PUT',
           body: data,
         }),
+        transformResponse: (response: ApiResponse<Car>) =>
+          transformResponse(response),
+        invalidatesTags: ['Cars'],
       }),
 
-      deleteCar: build.mutation<DefaultResponse, string>({
+      deleteCar: build.mutation<SuccessResponseDto<null>, string>({
         query: (id) => ({
           url: `/car/${id}`,
           method: 'DELETE',
         }),
+        transformResponse: (response: ApiResponse<null>) => {
+          if (!response.success) {
+            throw new Error(response.message);
+          }
+          return response as SuccessResponseDto<null>;
+        },
+        invalidatesTags: ['Cars'],
       }),
     };
   },
@@ -51,7 +62,6 @@ const carService = createApi({
 export const {
   useCreateCarMutation,
   useLazyGetCarsQuery,
-  useGetCarQuery,
   useUpdateCarMutation,
   useDeleteCarMutation,
 } = carService;

@@ -4,6 +4,7 @@ import {
   FLUSH,
   PAUSE,
   PERSIST,
+  PersistConfig,
   persistReducer,
   persistStore,
   PURGE,
@@ -46,10 +47,17 @@ export const storage: StorageAdapter = (
     : createNoopStorage()
 ) as StorageAdapter;
 
-const persistConfig = {
+type RootReducerType = ReturnType<typeof rootReducer>;
+
+type CustomPersistConfig = PersistConfig<RootReducerType> & {
+  version: number;
+};
+
+const persistConfig: CustomPersistConfig = {
   key: PERSIST_CONFIG_KEY,
   storage,
   version: 1,
+  whitelist: ['authendication'],
 };
 
 const rootReducer = combineReducers({

@@ -19,21 +19,23 @@ const Header = () => {
     router.push('/auth/login');
   };
   return (
-    <div className='py-3 flex justify-between items-center container mx-auto'>
-      <Link className='flex items-center gap-5	' href='/'>
-        <Car size={32} />
-        <h1 className='font-semibold text-xl'>Rent A Car</h1>
-      </Link>
-      <div className='flex gap-5 items-center'>
-        <HeaderLink href='/cars' name='Araçlar' />
-        <HeaderLink href='/about' name='Hakkımızda' />
-        <HeaderLink href='/contact' name='İletişim' />
-        {auth.role === 'ADMIN' && <HeaderLink href='/dashboard' name='Admin' />}
-        {auth.isAuthenticated && (
-          <Button onClick={handleLogOut}>Çıkış Yap</Button>
-        )}
+    <header className='py-3 shadow-sm border-b'>
+      <div className='flex justify-between items-center container mx-auto'>
+        <Link className='flex items-center gap-5' href='/'>
+          <Car size={32} />
+          <h1 className='font-semibold text-xl'>Rent A Car</h1>
+        </Link>
+        <div className='flex gap-5 items-center'>
+          <HeaderLink href='/cars' name='Araçlar' />
+          <HeaderLink href='/about' name='Hakkımızda' />
+          <HeaderLink href='/contact' name='İletişim' />
+          {auth.role === 'ADMIN' && <HeaderLink href='/dashboard' name='Admin' />}
+          {auth.isAuthenticated && (
+            <Button onClick={handleLogOut}>Çıkış Yap</Button>
+          )}
+        </div>
       </div>
-    </div>
+    </header>
   );
 };
 

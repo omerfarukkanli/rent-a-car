@@ -18,11 +18,11 @@ export type AuthToken = {
   access_token: string;
 };
 
-export type SuccessResponseDto = {
+export type SuccessResponseDto<T> = {
   success: boolean;
   statusCode: number;
   message: string;
-  data?: SignInResponse | Car | null;
+  data?: T;
   timestamp?: string;
 };
 
@@ -35,6 +35,7 @@ export type ErrorResponseDto = {
 };
 
 export type Car = {
+  _id?: string;
   brand: string;
   carModel: string;
   carType: CarType;
@@ -66,6 +67,6 @@ export enum UserRole {
   USER = 'USER',
 }
 
-export type DefaultResponse = SuccessResponseDto | ErrorResponseDto;
+export type ApiResponse<T> = SuccessResponseDto<T> | ErrorResponseDto;
 
 export const BaseUrl = process.env.NEXT_PUBLIC_API_URL;

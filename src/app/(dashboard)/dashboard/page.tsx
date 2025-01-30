@@ -1,9 +1,12 @@
+'use client';
+
+import { carService } from '@/store/service/car.service';
+import { DashboardTemplate } from '@/components/dashboard/templates/DashboardTemplate';
+
 const DashboardPage = () => {
-  return (
-    <div>
-      <h1>Dashboard</h1>
-    </div>
-  );
+  const { data: cars, isLoading } = carService.useGetCarsQuery();
+
+  return <DashboardTemplate cars={cars} isLoading={isLoading} />;
 };
 
 export default DashboardPage;
